@@ -2,6 +2,8 @@
 
 A comprehensive Node.js-based resume management system that allows users to create, manage, and organize their professional profiles with multiple resume versions.
 
+## Database Schema: <img width="1003" height="629" alt="image" src="https://github.com/user-attachments/assets/5fb623c4-bb56-4bde-9f55-2b080069d541" />
+
 ## 🌐 Live Demo
 
 **Deployed Application**: [https://resume-management-system-vkb2.onrender.com](https://resume-management-system-vkb2.onrender.com)
