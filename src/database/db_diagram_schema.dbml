@@ -1,0 +1,142 @@
+Table users {
+  id serial [pk, increment]
+  username varchar(255) [unique, not null]
+  name varchar(255) [not null]
+  email varchar(255) [unique, not null]
+  password varchar(255) [not null]
+  role user_role [not null, default: 'USER']
+  created_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+}
+
+Table personal_information {
+  id serial [pk, increment]
+  user_id integer [ref: > users.id, not null]
+  full_name varchar(255) [not null]
+  professional_title varchar(255) [not null]
+  email varchar(255) [not null]
+  phone_number varchar(255) [not null]
+  location varchar(255) [not null]
+  social_media_urls jsonb [default: '{}']
+  created_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+}
+
+Table professional_summaries {
+  id serial [pk, increment]
+  user_id integer [ref: > users.id, not null]
+  summary text [not null]
+  is_active boolean [not null, default: true]
+  created_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+}
+
+Table work_experiences {
+  id serial [pk, increment]
+  user_id integer [ref: > users.id, not null]
+  title varchar(255) [not null]
+  name varchar(255) [not null]
+  url varchar(255)
+  location varchar(255)
+  start_date date [not null]
+  end_date date
+  is_current boolean [not null, default: false]
+  description text
+  is_active boolean [not null, default: true]
+  created_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+}
+
+Table projects {
+  id serial [pk, increment]
+  user_id integer [ref: > users.id, not null]
+  title varchar(255) [not null]
+  url varchar(255)
+  start_date date [not null]
+  end_date date
+  description text [not null]
+  is_active boolean [not null, default: true]
+  created_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+}
+
+Table skills {
+  id serial [pk, increment]
+  user_id integer [ref: > users.id, not null]
+  name varchar(255) [not null]
+  level int [note: "1-5 scale"]
+  is_active boolean [not null, default: true]
+  created_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+}
+
+
+Table education {
+  id serial [pk, increment]
+  user_id integer [ref: > users.id, not null]
+  degree varchar(255) [not null]
+  name varchar(255) [not null]
+  url varchar(255)
+  start_date date [not null]
+  end_date date
+  location varchar(255) [not null]
+  description text
+  is_active boolean [not null, default: true]
+  created_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+}
+
+Table certifications {
+  id serial [pk, increment]
+  user_id integer [ref: > users.id, not null]
+  name varchar(255) [not null]
+  url varchar(255)
+  description text
+  is_active boolean [not null, default: true]
+  created_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+}
+
+Table resumes {
+  id UUID [pk, default: `gen_random_uuid()`]
+  title varchar(255) [not null, default: 'Default Resume']
+  user_id integer [ref: > users.id, not null]
+  personal_information_id integer [ref: > personal_information.id, not null]
+  professional_summary_ids int[] [default: '{}', not null]
+  work_experience_ids int[] [default: '{}', not null]
+  project_ids int[] [default: '{}', not null]
+  skill_ids int[] [default: '{}', not null]
+  education_ids int[] [default: '{}', not null]
+  certification_ids int[] [default: '{}', not null]
+  is_active boolean [not null, default: true]
+  created_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+}
+
+Table sessions {
+  id UUID [pk, default: `gen_random_uuid()`]
+  user_id integer [ref: > users.id, not null]
+  token varchar(255) [not null]
+  is_active boolean [not null, default: true]
+  expires_at timestamp [not null]
+  created_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+}
+
+Enum user_role {
+  ADMIN
+  USER
+}
+
+
+Ref: "projects"."id" < "resumes"."project_ids"
+
+Ref: "education"."id" < "resumes"."education_ids"
+
+Ref: "skills"."id" < "resumes"."skill_ids"
+
+Ref: "certifications"."id" < "resumes"."certification_ids"
+
+Ref: "work_experiences"."id" < "resumes"."work_experience_ids"
+
+Ref: "professional_summaries"."id" < "resumes"."professional_summary_ids"
