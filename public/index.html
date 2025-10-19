@@ -1,0 +1,1923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            text-align: center;
+            color: #718096;
+        }
+
+        .auth-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-content {
+            display: none;
+        }
+
+        .main-content.active {
+            display: block;
+        }
+
+        .tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px 15px 0 0;
+            margin-bottom: 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #718096;
+            transition: all 0.3s ease;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .tab.active {
+            background: rgba(255, 255, 255, 0.95);
+            color: #4a5568;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 0 0 15px 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            min-height: 500px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: transform 0.2s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #718096;
+        }
+
+        .btn-danger {
+            background: #e53e3e;
+        }
+
+        .btn-success {
+            background: #38a169;
+        }
+
+        .btn-google {
+            background: white;
+            color: #333;
+            border: 2px solid #dadce0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .btn-google:hover {
+            background: #f8f9fa;
+            border-color: #dadce0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .oauth-section {
+            margin-bottom: 20px;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .divider span {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0 15px;
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .form-group label input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+            transform: scale(1.1);
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #667eea;
+        }
+
+        .card h3 {
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #718096;
+            margin-bottom: 5px;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .status.success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        .status.error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #feb2b2;
+        }
+
+        .status.info {
+            background: #bee3f8;
+            color: #2a4365;
+            border: 1px solid #90cdf4;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .resume-preview {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .resume-preview h2 {
+            color: #4a5568;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .resume-section {
+            margin-bottom: 25px;
+        }
+
+        .resume-section h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .user-info {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info span {
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .logout-btn {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .logout-btn:hover {
+            background: #c53030;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                border-radius: 0;
+            }
+            
+            .tab:first-child {
+                border-radius: 15px 15px 0 0;
+            }
+            
+            .tab:last-child {
+                border-radius: 0 0 15px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📄 Resume Management System</h1>
+            <p>Create, manage, and build professional resumes with ease</p>
+        </div>
+
+        <!-- Authentication Section -->
+        <div id="authSection" class="auth-section">
+            <h2>🔐 Login to Your Account</h2>
+            <div id="autoLoginStatus" class="status info hidden">
+                <div class="spinner" style="width: 20px; height: 20px; margin-right: 10px; display: inline-block;"></div>
+                Checking for saved login...
+            </div>
+            
+            <!-- Google OAuth Button -->
+            <div class="oauth-section">
+                <button type="button" class="btn btn-google" onclick="loginWithGoogle()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" style="margin-right: 10px;">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Continue with Google
+                </button>
+                <div class="divider">
+                    <span>or</span>
+                </div>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="rememberMe" name="rememberMe"> Remember me
+                    </label>
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <button type="button" class="btn btn-secondary" onclick="showRegisterForm()">Register</button>
+            </form>
+
+            <form id="registerForm" class="hidden">
+                <h3>Create New Account</h3>
+                
+                <!-- Google OAuth Button for Registration -->
+                <div class="oauth-section">
+                    <button type="button" class="btn btn-google" onclick="loginWithGoogle()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" style="margin-right: 10px;">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        Continue with Google
+                    </button>
+                    <div class="divider">
+                        <span>or</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regUsername">Username:</label>
+                    <input type="text" id="regUsername" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="regName">Full Name:</label>
+                    <input type="text" id="regName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email:</label>
+                    <input type="email" id="regEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Password:</label>
+                    <input type="password" id="regPassword" name="password" required>
+                </div>
+                <button type="submit" class="btn">Register</button>
+                <button type="button" class="btn btn-secondary" onclick="showLoginForm()">Back to Login</button>
+            </form>
+
+            <div id="authStatus" class="status hidden"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div id="mainContent" class="main-content">
+            <div class="user-info">
+                <span id="userInfo">Welcome back!</span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('personal')">👤 Personal Info</button>
+                <button class="tab" onclick="showTab('summary')">📝 Summary</button>
+                <button class="tab" onclick="showTab('experience')">💼 Experience</button>
+                <button class="tab" onclick="showTab('projects')">🚀 Projects</button>
+                <button class="tab" onclick="showTab('skills')">🛠️ Skills</button>
+                <button class="tab" onclick="showTab('education')">🎓 Education</button>
+                <button class="tab" onclick="showTab('certifications')">🏆 Certifications</button>
+                <button class="tab" onclick="showTab('resumes')">📄 Resumes</button>
+            </div>
+
+            <!-- Personal Information Tab -->
+            <div id="personalTab" class="tab-content">
+                <h2>👤 Personal Information</h2>
+                <form id="personalForm">
+                    <div class="grid">
+                        <div class="form-group">
+                            <label for="fullName">Full Name:</label>
+                            <input type="text" id="fullName" name="full_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="professionalTitle">Professional Title:</label>
+                            <input type="text" id="professionalTitle" name="professional_title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="personalEmail">Email:</label>
+                            <input type="email" id="personalEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phoneNumber">Phone Number:</label>
+                            <input type="tel" id="phoneNumber" name="phone_number" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Location:</label>
+                            <input type="text" id="location" name="location" required>
+                        </div>
+                    </div>
+                    <h3>Social Media Links</h3>
+                    <div class="grid">
+                        <div class="form-group">
+                            <label for="linkedin">LinkedIn:</label>
+                            <input type="url" id="linkedin" name="linkedin">
+                        </div>
+                        <div class="form-group">
+                            <label for="github">GitHub:</label>
+                            <input type="url" id="github" name="github">
+                        </div>
+                        <div class="form-group">
+                            <label for="portfolio">Portfolio:</label>
+                            <input type="url" id="portfolio" name="portfolio">
+                        </div>
+                        <div class="form-group">
+                            <label for="leetcode">LeetCode:</label>
+                            <input type="url" id="leetcode" name="leetcode">
+                        </div>
+                        <div class="form-group">
+                            <label for="hackerrank">HackerRank:</label>
+                            <input type="url" id="hackerrank" name="hackerrank">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Save Personal Information</button>
+                </form>
+                <div id="personalStatus" class="status hidden"></div>
+            </div>
+
+            <!-- Professional Summary Tab -->
+            <div id="summaryTab" class="tab-content hidden">
+                <h2>📝 Professional Summaries</h2>
+                <form id="summaryForm">
+                    <div class="form-group">
+                        <label for="summaryText">Professional Summary:</label>
+                        <textarea id="summaryText" name="summary" placeholder="Write a compelling professional summary..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn">Add Summary</button>
+                </form>
+                <div id="summariesList"></div>
+                <div id="summaryStatus" class="status hidden"></div>
+            </div>
+
+            <!-- Work Experience Tab -->
+            <div id="experienceTab" class="tab-content hidden">
+                <h2>💼 Work Experience</h2>
+                <form id="experienceForm">
+                    <div class="grid">
+                        <div class="form-group">
+                            <label for="jobTitle">Job Title:</label>
+                            <input type="text" id="jobTitle" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="companyName">Company Name:</label>
+                            <input type="text" id="companyName" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="companyUrl">Company URL:</label>
+                            <input type="url" id="companyUrl" name="url">
+                        </div>
+                        <div class="form-group">
+                            <label for="jobLocation">Location:</label>
+                            <input type="text" id="jobLocation" name="location">
+                        </div>
+                        <div class="form-group">
+                            <label for="startDate">Start Date:</label>
+                            <input type="date" id="startDate" name="start_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">End Date:</label>
+                            <input type="date" id="endDate" name="end_date">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="isCurrent" name="is_current"> Currently working here
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="jobDescription">Job Description:</label>
+                        <textarea id="jobDescription" name="description" placeholder="Describe your role and achievements..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn">Add Work Experience</button>
+                </form>
+                <div id="experiencesList"></div>
+                <div id="experienceStatus" class="status hidden"></div>
+            </div>
+
+            <!-- Projects Tab -->
+            <div id="projectsTab" class="tab-content hidden">
+                <h2>🚀 Projects</h2>
+                <form id="projectForm">
+                    <div class="grid">
+                        <div class="form-group">
+                            <label for="projectTitle">Project Title:</label>
+                            <input type="text" id="projectTitle" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="projectUrl">Project URL:</label>
+                            <input type="url" id="projectUrl" name="url">
+                        </div>
+                        <div class="form-group">
+                            <label for="projectStartDate">Start Date:</label>
+                            <input type="date" id="projectStartDate" name="start_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="projectEndDate">End Date:</label>
+                            <input type="date" id="projectEndDate" name="end_date">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectDescription">Project Description:</label>
+                        <textarea id="projectDescription" name="description" placeholder="Describe your project, technologies used, and your role..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn">Add Project</button>
+                </form>
+                <div id="projectsList"></div>
+                <div id="projectStatus" class="status hidden"></div>
+            </div>
+
+            <!-- Skills Tab -->
+            <div id="skillsTab" class="tab-content hidden">
+                <h2>🛠️ Skills</h2>
+                <form id="skillForm">
+                    <div class="grid">
+                        <div class="form-group">
+                            <label for="skillName">Skill Name:</label>
+                            <input type="text" id="skillName" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="skillLevel">Proficiency Level (1-5):</label>
+                            <select id="skillLevel" name="level">
+                                <option value="">Select Level</option>
+                                <option value="1">1 - Beginner</option>
+                                <option value="2">2 - Novice</option>
+                                <option value="3">3 - Intermediate</option>
+                                <option value="4">4 - Advanced</option>
+                                <option value="5">5 - Expert</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Add Skill</button>
+                </form>
+                <div id="skillsList"></div>
+                <div id="skillStatus" class="status hidden"></div>
+            </div>
+
+            <!-- Education Tab -->
+            <div id="educationTab" class="tab-content hidden">
+                <h2>🎓 Education</h2>
+                <form id="educationForm">
+                    <div class="grid">
+                        <div class="form-group">
+                            <label for="degree">Degree:</label>
+                            <input type="text" id="degree" name="degree" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="institutionName">Institution Name:</label>
+                            <input type="text" id="institutionName" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="institutionUrl">Institution URL:</label>
+                            <input type="url" id="institutionUrl" name="url">
+                        </div>
+                        <div class="form-group">
+                            <label for="educationStartDate">Start Date:</label>
+                            <input type="date" id="educationStartDate" name="start_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="educationEndDate">End Date:</label>
+                            <input type="date" id="educationEndDate" name="end_date">
+                        </div>
+                        <div class="form-group">
+                            <label for="educationLocation">Location:</label>
+                            <input type="text" id="educationLocation" name="location" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="educationDescription">Description:</label>
+                        <textarea id="educationDescription" name="description" placeholder="Additional details about your education..."></textarea>
+                    </div>
+                    <button type="submit" class="btn">Add Education</button>
+                </form>
+                <div id="educationList"></div>
+                <div id="educationStatus" class="status hidden"></div>
+            </div>
+
+            <!-- Certifications Tab -->
+            <div id="certificationsTab" class="tab-content hidden">
+                <h2>🏆 Certifications</h2>
+                <form id="certificationForm">
+                    <div class="grid">
+                        <div class="form-group">
+                            <label for="certificationName">Certification Name:</label>
+                            <input type="text" id="certificationName" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="certificationUrl">Certification URL:</label>
+                            <input type="url" id="certificationUrl" name="url">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="certificationDescription">Description:</label>
+                        <textarea id="certificationDescription" name="description" placeholder="Additional details about the certification..."></textarea>
+                    </div>
+                    <button type="submit" class="btn">Add Certification</button>
+                </form>
+                <div id="certificationsList"></div>
+                <div id="certificationStatus" class="status hidden"></div>
+            </div>
+
+            <!-- Resumes Tab -->
+            <div id="resumesTab" class="tab-content hidden">
+                <h2>📄 Resume Builder</h2>
+                <form id="resumeForm">
+                    <div class="form-group">
+                        <label for="resumeTitle">Resume Title:</label>
+                        <input type="text" id="resumeTitle" name="title" placeholder="e.g., Software Engineer Resume" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Select Components to Include:</label>
+                        <div id="resumeComponents">
+                            <!-- Components will be populated dynamically -->
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Create Resume</button>
+                </form>
+                <div id="resumesList"></div>
+                <div id="resumeStatus" class="status hidden"></div>
+            </div>
+
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let authToken = '';
+        let currentUser = null;
+        let personalInfo = null;
+        let summaries = [];
+        let experiences = [];
+        let projects = [];
+        let skills = [];
+        let education = [];
+        let certifications = [];
+        let resumes = [];
+
+        // API Base URL
+        const API_BASE = '/api';
+
+        // Utility functions
+        function showStatus(elementId, message, type = 'info') {
+            const statusEl = document.getElementById(elementId);
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+            statusEl.classList.remove('hidden');
+            setTimeout(() => {
+                statusEl.classList.add('hidden');
+            }, 5000);
+        }
+
+        function showLoading(show = true) {
+            const loading = document.getElementById('loading');
+            if (show) {
+                loading.classList.add('active');
+            } else {
+                loading.classList.remove('active');
+            }
+        }
+
+        function getAuthHeaders() {
+            return {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            };
+        }
+
+        // Authentication functions
+        function loginWithGoogle() {
+            // Redirect to Google OAuth endpoint
+            window.location.href = '/api/auth/google';
+        }
+
+        async function login(email, password) {
+            try {
+                showLoading(true);
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    authToken = data.data.token;
+                    currentUser = data.data.user;
+                    
+                    // Only store token if "Remember Me" is checked
+                    const rememberMe = document.getElementById('rememberMe').checked;
+                    if (rememberMe) {
+                        localStorage.setItem('authToken', authToken);
+                    }
+                    
+                    document.getElementById('authSection').style.display = 'none';
+                    document.getElementById('mainContent').classList.add('active');
+                    document.getElementById('userInfo').textContent = `Welcome, ${currentUser.name}!`;
+                    showStatus('authStatus', 'Login successful!', 'success');
+                    await loadAllData();
+                } else {
+                    showStatus('authStatus', data.message || 'Login failed', 'error');
+                }
+            } catch (error) {
+                showStatus('authStatus', 'Login failed: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function register(userData) {
+            try {
+                showLoading(true);
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    showStatus('authStatus', 'Registration successful! Please login.', 'success');
+                    showLoginForm();
+                } else {
+                    showStatus('authStatus', data.message || 'Registration failed', 'error');
+                }
+            } catch (error) {
+                showStatus('authStatus', 'Registration failed: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function logout() {
+            authToken = '';
+            currentUser = null;
+            localStorage.removeItem('authToken');
+            document.getElementById('authSection').style.display = 'block';
+            document.getElementById('mainContent').classList.remove('active');
+            showLoginForm();
+        }
+
+        function showLoginForm() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+        }
+
+        function showRegisterForm() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+
+        // Tab management
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName + 'Tab').classList.remove('hidden');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Data loading functions
+        async function loadAllData() {
+            try {
+                showLoading(true);
+                await Promise.all([
+                    loadPersonalInfo(),
+                    loadSummaries(),
+                    loadExperiences(),
+                    loadProjects(),
+                    loadSkills(),
+                    loadEducation(),
+                    loadCertifications(),
+                    loadResumes()
+                ]);
+            } catch (error) {
+                console.error('Error loading data:', error);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function loadPersonalInfo() {
+            try {
+                const response = await fetch(`${API_BASE}/resume/personal-information`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                if (data.success && data.data) {
+                    personalInfo = data.data;
+                    populatePersonalForm(data.data);
+                }
+            } catch (error) {
+                console.error('Error loading personal info:', error);
+            }
+        }
+
+        async function loadSummaries() {
+            try {
+                const response = await fetch(`${API_BASE}/resume/professional-summaries`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                if (data.success) {
+                    summaries = data.data;
+                    displaySummaries();
+                }
+            } catch (error) {
+                console.error('Error loading summaries:', error);
+            }
+        }
+
+        async function loadExperiences() {
+            try {
+                const response = await fetch(`${API_BASE}/resume/work-experiences`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                if (data.success) {
+                    experiences = data.data;
+                    displayExperiences();
+                }
+            } catch (error) {
+                console.error('Error loading experiences:', error);
+            }
+        }
+
+        async function loadProjects() {
+            try {
+                const response = await fetch(`${API_BASE}/resume/projects`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                if (data.success) {
+                    projects = data.data;
+                    displayProjects();
+                }
+            } catch (error) {
+                console.error('Error loading projects:', error);
+            }
+        }
+
+        async function loadSkills() {
+            try {
+                const response = await fetch(`${API_BASE}/resume/skills`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                if (data.success) {
+                    skills = data.data;
+                    displaySkills();
+                }
+            } catch (error) {
+                console.error('Error loading skills:', error);
+            }
+        }
+
+        async function loadEducation() {
+            try {
+                const response = await fetch(`${API_BASE}/resume/education`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                if (data.success) {
+                    education = data.data;
+                    displayEducation();
+                }
+            } catch (error) {
+                console.error('Error loading education:', error);
+            }
+        }
+
+        async function loadCertifications() {
+            try {
+                const response = await fetch(`${API_BASE}/resume/certifications`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                if (data.success) {
+                    certifications = data.data;
+                    displayCertifications();
+                }
+            } catch (error) {
+                console.error('Error loading certifications:', error);
+            }
+        }
+
+        async function loadResumes() {
+            try {
+                const response = await fetch(`${API_BASE}/resume/resumes`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                if (data.success) {
+                    resumes = data.data;
+                    displayResumes();
+                    populateResumeComponents();
+                }
+            } catch (error) {
+                console.error('Error loading resumes:', error);
+            }
+        }
+
+        // Form population functions
+        function populatePersonalForm(data) {
+            document.getElementById('fullName').value = data.full_name || '';
+            document.getElementById('professionalTitle').value = data.professional_title || '';
+            document.getElementById('personalEmail').value = data.email || '';
+            document.getElementById('phoneNumber').value = data.phone_number || '';
+            document.getElementById('location').value = data.location || '';
+            
+            const socialMedia = data.social_media_urls || {};
+            document.getElementById('linkedin').value = socialMedia.linkedin || '';
+            document.getElementById('github').value = socialMedia.github || '';
+            document.getElementById('portfolio').value = socialMedia.portfolio || '';
+            document.getElementById('leetcode').value = socialMedia.leetcode || '';
+            document.getElementById('hackerrank').value = socialMedia.hackerrank || '';
+        }
+
+        // Display functions
+        function displaySummaries() {
+            const container = document.getElementById('summariesList');
+            container.innerHTML = '';
+            
+            summaries.forEach(summary => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <h3>Professional Summary</h3>
+                    <p>${summary.summary}</p>
+                    <button class="btn btn-danger" onclick="deleteSummary(${summary.id})">Delete</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function displayExperiences() {
+            const container = document.getElementById('experiencesList');
+            container.innerHTML = '';
+            
+            experiences.forEach(exp => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                const endDate = exp.is_current ? 'Present' : exp.end_date;
+                card.innerHTML = `
+                    <h3>${exp.title} at ${exp.name}</h3>
+                    <p><strong>Duration:</strong> ${exp.start_date} - ${endDate}</p>
+                    <p><strong>Location:</strong> ${exp.location || 'Not specified'}</p>
+                    <p><strong>Description:</strong> ${exp.description}</p>
+                    <button class="btn btn-danger" onclick="deleteExperience(${exp.id})">Delete</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function displayProjects() {
+            const container = document.getElementById('projectsList');
+            container.innerHTML = '';
+            
+            projects.forEach(project => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <h3>${project.title}</h3>
+                    <p><strong>Duration:</strong> ${project.start_date} - ${project.end_date || 'Ongoing'}</p>
+                    <p><strong>Description:</strong> ${project.description}</p>
+                    ${project.url ? `<p><strong>URL:</strong> <a href="${project.url}" target="_blank">${project.url}</a></p>` : ''}
+                    <button class="btn btn-danger" onclick="deleteProject(${project.id})">Delete</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function displaySkills() {
+            const container = document.getElementById('skillsList');
+            container.innerHTML = '';
+            
+            skills.forEach(skill => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                const levelText = skill.level ? ` (Level ${skill.level})` : '';
+                card.innerHTML = `
+                    <h3>${skill.name}${levelText}</h3>
+                    <button class="btn btn-danger" onclick="deleteSkill(${skill.id})">Delete</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function displayEducation() {
+            const container = document.getElementById('educationList');
+            container.innerHTML = '';
+            
+            education.forEach(edu => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <h3>${edu.degree}</h3>
+                    <p><strong>Institution:</strong> ${edu.name}</p>
+                    <p><strong>Duration:</strong> ${edu.start_date} - ${edu.end_date || 'Ongoing'}</p>
+                    <p><strong>Location:</strong> ${edu.location}</p>
+                    ${edu.description ? `<p><strong>Description:</strong> ${edu.description}</p>` : ''}
+                    <button class="btn btn-danger" onclick="deleteEducation(${edu.id})">Delete</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function displayCertifications() {
+            const container = document.getElementById('certificationsList');
+            container.innerHTML = '';
+            
+            certifications.forEach(cert => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <h3>${cert.name}</h3>
+                    ${cert.description ? `<p><strong>Description:</strong> ${cert.description}</p>` : ''}
+                    ${cert.url ? `<p><strong>URL:</strong> <a href="${cert.url}" target="_blank">${cert.url}</a></p>` : ''}
+                    <button class="btn btn-danger" onclick="deleteCertification(${cert.id})">Delete</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function displayResumes() {
+            const container = document.getElementById('resumesList');
+            container.innerHTML = '';
+            
+            resumes.forEach(resume => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <h3>${resume.title}</h3>
+                    <p><strong>Created:</strong> ${new Date(resume.created_at).toLocaleDateString()}</p>
+                    <button class="btn" onclick="viewResume('${resume.id}')">View Resume</button>
+                    <button class="btn btn-danger" onclick="deleteResume('${resume.id}')">Delete</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function populateResumeComponents() {
+            const container = document.getElementById('resumeComponents');
+            container.innerHTML = '';
+            
+            // Personal Information (required)
+            if (personalInfo) {
+                const checkbox = document.createElement('div');
+                checkbox.innerHTML = `
+                    <label>
+                        <input type="checkbox" checked disabled> Personal Information (Required)
+                    </label>
+                `;
+                container.appendChild(checkbox);
+            }
+            
+            // Professional Summaries
+            if (summaries.length > 0) {
+                const checkbox = document.createElement('div');
+                checkbox.innerHTML = `
+                    <label>
+                        <input type="checkbox" name="professional_summary_ids" value="${summaries.map(s => s.id).join(',')}" checked> Professional Summaries (${summaries.length})
+                    </label>
+                `;
+                container.appendChild(checkbox);
+            }
+            
+            // Work Experiences
+            if (experiences.length > 0) {
+                const checkbox = document.createElement('div');
+                checkbox.innerHTML = `
+                    <label>
+                        <input type="checkbox" name="work_experience_ids" value="${experiences.map(e => e.id).join(',')}" checked> Work Experiences (${experiences.length})
+                    </label>
+                `;
+                container.appendChild(checkbox);
+            }
+            
+            // Projects
+            if (projects.length > 0) {
+                const checkbox = document.createElement('div');
+                checkbox.innerHTML = `
+                    <label>
+                        <input type="checkbox" name="project_ids" value="${projects.map(p => p.id).join(',')}" checked> Projects (${projects.length})
+                    </label>
+                `;
+                container.appendChild(checkbox);
+            }
+            
+            // Skills
+            if (skills.length > 0) {
+                const checkbox = document.createElement('div');
+                checkbox.innerHTML = `
+                    <label>
+                        <input type="checkbox" name="skill_ids" value="${skills.map(s => s.id).join(',')}" checked> Skills (${skills.length})
+                    </label>
+                `;
+                container.appendChild(checkbox);
+            }
+            
+            // Education
+            if (education.length > 0) {
+                const checkbox = document.createElement('div');
+                checkbox.innerHTML = `
+                    <label>
+                        <input type="checkbox" name="education_ids" value="${education.map(e => e.id).join(',')}" checked> Education (${education.length})
+                    </label>
+                `;
+                container.appendChild(checkbox);
+            }
+            
+            // Certifications
+            if (certifications.length > 0) {
+                const checkbox = document.createElement('div');
+                checkbox.innerHTML = `
+                    <label>
+                        <input type="checkbox" name="certification_ids" value="${certifications.map(c => c.id).join(',')}" checked> Certifications (${certifications.length})
+                    </label>
+                `;
+                container.appendChild(checkbox);
+            }
+        }
+
+        // Form submission handlers
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            await login(email, password);
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userData = {
+                username: document.getElementById('regUsername').value,
+                name: document.getElementById('regName').value,
+                email: document.getElementById('regEmail').value,
+                password: document.getElementById('regPassword').value
+            };
+            await register(userData);
+        });
+
+        document.getElementById('personalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Handle social media URLs
+            data.social_media_urls = {
+                linkedin: data.linkedin,
+                github: data.github,
+                portfolio: data.portfolio,
+                leetcode: data.leetcode,
+                hackerrank: data.hackerrank
+            };
+            
+            // Remove individual social media fields
+            delete data.linkedin;
+            delete data.github;
+            delete data.portfolio;
+            delete data.leetcode;
+            delete data.hackerrank;
+            
+            try {
+                showLoading(true);
+                const method = personalInfo ? 'PUT' : 'POST';
+                const response = await fetch(`${API_BASE}/resume/personal-information`, {
+                    method,
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showStatus('personalStatus', 'Personal information saved successfully!', 'success');
+                    await loadPersonalInfo();
+                } else {
+                    showStatus('personalStatus', result.message || 'Failed to save personal information', 'error');
+                }
+            } catch (error) {
+                showStatus('personalStatus', 'Error: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        document.getElementById('summaryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                showLoading(true);
+                const response = await fetch(`${API_BASE}/resume/professional-summaries`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showStatus('summaryStatus', 'Professional summary added successfully!', 'success');
+                    e.target.reset();
+                    await loadSummaries();
+                } else {
+                    showStatus('summaryStatus', result.message || 'Failed to add summary', 'error');
+                }
+            } catch (error) {
+                showStatus('summaryStatus', 'Error: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        document.getElementById('experienceForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            data.is_current = document.getElementById('isCurrent').checked;
+            
+            if (data.is_current) {
+                delete data.end_date;
+            }
+            
+            try {
+                showLoading(true);
+                const response = await fetch(`${API_BASE}/resume/work-experiences`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showStatus('experienceStatus', 'Work experience added successfully!', 'success');
+                    e.target.reset();
+                    await loadExperiences();
+                } else {
+                    showStatus('experienceStatus', result.message || 'Failed to add work experience', 'error');
+                }
+            } catch (error) {
+                showStatus('experienceStatus', 'Error: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        document.getElementById('projectForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                showLoading(true);
+                const response = await fetch(`${API_BASE}/resume/projects`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showStatus('projectStatus', 'Project added successfully!', 'success');
+                    e.target.reset();
+                    await loadProjects();
+                } else {
+                    showStatus('projectStatus', result.message || 'Failed to add project', 'error');
+                }
+            } catch (error) {
+                showStatus('projectStatus', 'Error: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        document.getElementById('skillForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            if (data.level) {
+                data.level = parseInt(data.level);
+            }
+            
+            try {
+                showLoading(true);
+                const response = await fetch(`${API_BASE}/resume/skills`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showStatus('skillStatus', 'Skill added successfully!', 'success');
+                    e.target.reset();
+                    await loadSkills();
+                } else {
+                    showStatus('skillStatus', result.message || 'Failed to add skill', 'error');
+                }
+            } catch (error) {
+                showStatus('skillStatus', 'Error: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        document.getElementById('educationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                showLoading(true);
+                const response = await fetch(`${API_BASE}/resume/education`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showStatus('educationStatus', 'Education added successfully!', 'success');
+                    e.target.reset();
+                    await loadEducation();
+                } else {
+                    showStatus('educationStatus', result.message || 'Failed to add education', 'error');
+                }
+            } catch (error) {
+                showStatus('educationStatus', 'Error: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        document.getElementById('certificationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                showLoading(true);
+                const response = await fetch(`${API_BASE}/resume/certifications`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showStatus('certificationStatus', 'Certification added successfully!', 'success');
+                    e.target.reset();
+                    await loadCertifications();
+                } else {
+                    showStatus('certificationStatus', result.message || 'Failed to add certification', 'error');
+                }
+            } catch (error) {
+                showStatus('certificationStatus', 'Error: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        document.getElementById('resumeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Collect selected components
+            const selectedComponents = {};
+            const checkboxes = document.querySelectorAll('#resumeComponents input[type="checkbox"]:checked');
+            
+            checkboxes.forEach(checkbox => {
+                const name = checkbox.name;
+                const value = checkbox.value;
+                if (name && value) {
+                    if (name.endsWith('_ids')) {
+                        selectedComponents[name] = value.split(',').map(id => parseInt(id));
+                    } else {
+                        selectedComponents[name] = value;
+                    }
+                }
+            });
+            
+            // Add personal information ID (required)
+            if (personalInfo) {
+                selectedComponents.personal_information_id = personalInfo.id;
+            }
+            
+            try {
+                showLoading(true);
+                const response = await fetch(`${API_BASE}/resume/resumes`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(selectedComponents)
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showStatus('resumeStatus', 'Resume created successfully!', 'success');
+                    e.target.reset();
+                    await loadResumes();
+                } else {
+                    showStatus('resumeStatus', result.message || 'Failed to create resume', 'error');
+                }
+            } catch (error) {
+                showStatus('resumeStatus', 'Error: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        // Delete functions
+        async function deleteSummary(id) {
+            if (confirm('Are you sure you want to delete this summary?')) {
+                try {
+                    showLoading(true);
+                    const response = await fetch(`${API_BASE}/resume/professional-summaries/${id}`, {
+                        method: 'DELETE',
+                        headers: getAuthHeaders()
+                    });
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        showStatus('summaryStatus', 'Summary deleted successfully!', 'success');
+                        await loadSummaries();
+                    } else {
+                        showStatus('summaryStatus', result.message || 'Failed to delete summary', 'error');
+                    }
+                } catch (error) {
+                    showStatus('summaryStatus', 'Error: ' + error.message, 'error');
+                } finally {
+                    showLoading(false);
+                }
+            }
+        }
+
+        async function deleteExperience(id) {
+            if (confirm('Are you sure you want to delete this work experience?')) {
+                try {
+                    showLoading(true);
+                    const response = await fetch(`${API_BASE}/resume/work-experiences/${id}`, {
+                        method: 'DELETE',
+                        headers: getAuthHeaders()
+                    });
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        showStatus('experienceStatus', 'Work experience deleted successfully!', 'success');
+                        await loadExperiences();
+                    } else {
+                        showStatus('experienceStatus', result.message || 'Failed to delete work experience', 'error');
+                    }
+                } catch (error) {
+                    showStatus('experienceStatus', 'Error: ' + error.message, 'error');
+                } finally {
+                    showLoading(false);
+                }
+            }
+        }
+
+        async function deleteProject(id) {
+            if (confirm('Are you sure you want to delete this project?')) {
+                try {
+                    showLoading(true);
+                    const response = await fetch(`${API_BASE}/resume/projects/${id}`, {
+                        method: 'DELETE',
+                        headers: getAuthHeaders()
+                    });
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        showStatus('projectStatus', 'Project deleted successfully!', 'success');
+                        await loadProjects();
+                    } else {
+                        showStatus('projectStatus', result.message || 'Failed to delete project', 'error');
+                    }
+                } catch (error) {
+                    showStatus('projectStatus', 'Error: ' + error.message, 'error');
+                } finally {
+                    showLoading(false);
+                }
+            }
+        }
+
+        async function deleteSkill(id) {
+            if (confirm('Are you sure you want to delete this skill?')) {
+                try {
+                    showLoading(true);
+                    const response = await fetch(`${API_BASE}/resume/skills/${id}`, {
+                        method: 'DELETE',
+                        headers: getAuthHeaders()
+                    });
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        showStatus('skillStatus', 'Skill deleted successfully!', 'success');
+                        await loadSkills();
+                    } else {
+                        showStatus('skillStatus', result.message || 'Failed to delete skill', 'error');
+                    }
+                } catch (error) {
+                    showStatus('skillStatus', 'Error: ' + error.message, 'error');
+                } finally {
+                    showLoading(false);
+                }
+            }
+        }
+
+        async function deleteEducation(id) {
+            if (confirm('Are you sure you want to delete this education record?')) {
+                try {
+                    showLoading(true);
+                    const response = await fetch(`${API_BASE}/resume/education/${id}`, {
+                        method: 'DELETE',
+                        headers: getAuthHeaders()
+                    });
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        showStatus('educationStatus', 'Education deleted successfully!', 'success');
+                        await loadEducation();
+                    } else {
+                        showStatus('educationStatus', result.message || 'Failed to delete education', 'error');
+                    }
+                } catch (error) {
+                    showStatus('educationStatus', 'Error: ' + error.message, 'error');
+                } finally {
+                    showLoading(false);
+                }
+            }
+        }
+
+        async function deleteCertification(id) {
+            if (confirm('Are you sure you want to delete this certification?')) {
+                try {
+                    showLoading(true);
+                    const response = await fetch(`${API_BASE}/resume/certifications/${id}`, {
+                        method: 'DELETE',
+                        headers: getAuthHeaders()
+                    });
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        showStatus('certificationStatus', 'Certification deleted successfully!', 'success');
+                        await loadCertifications();
+                    } else {
+                        showStatus('certificationStatus', result.message || 'Failed to delete certification', 'error');
+                    }
+                } catch (error) {
+                    showStatus('certificationStatus', 'Error: ' + error.message, 'error');
+                } finally {
+                    showLoading(false);
+                }
+            }
+        }
+
+        async function deleteResume(id) {
+            if (confirm('Are you sure you want to delete this resume?')) {
+                try {
+                    showLoading(true);
+                    const response = await fetch(`${API_BASE}/resume/resumes/${id}`, {
+                        method: 'DELETE',
+                        headers: getAuthHeaders()
+                    });
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        showStatus('resumeStatus', 'Resume deleted successfully!', 'success');
+                        await loadResumes();
+                    } else {
+                        showStatus('resumeStatus', result.message || 'Failed to delete resume', 'error');
+                    }
+                } catch (error) {
+                    showStatus('resumeStatus', 'Error: ' + error.message, 'error');
+                } finally {
+                    showLoading(false);
+                }
+            }
+        }
+
+        async function viewResume(id) {
+            try {
+                showLoading(true);
+                const response = await fetch(`${API_BASE}/resume/resumes/${id}`, {
+                    headers: getAuthHeaders()
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    displayResumePreview(result.data);
+                } else {
+                    showStatus('resumeStatus', result.message || 'Failed to load resume', 'error');
+                }
+            } catch (error) {
+                showStatus('resumeStatus', 'Error: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function displayResumePreview(resume) {
+            const preview = document.createElement('div');
+            preview.className = 'resume-preview';
+            preview.innerHTML = `
+                <h2>${resume.title}</h2>
+                <div class="resume-section">
+                    <h3>Personal Information</h3>
+                    <p><strong>Name:</strong> ${resume.personal_information.full_name}</p>
+                    <p><strong>Title:</strong> ${resume.personal_information.professional_title}</p>
+                    <p><strong>Email:</strong> ${resume.personal_information.email}</p>
+                    <p><strong>Phone:</strong> ${resume.personal_information.phone_number}</p>
+                    <p><strong>Location:</strong> ${resume.personal_information.location}</p>
+                </div>
+                
+                ${resume.professional_summaries.length > 0 ? `
+                <div class="resume-section">
+                    <h3>Professional Summary</h3>
+                    <p>${resume.professional_summaries[0].summary}</p>
+                </div>
+                ` : ''}
+                
+                ${resume.work_experiences.length > 0 ? `
+                <div class="resume-section">
+                    <h3>Work Experience</h3>
+                    ${resume.work_experiences.map(exp => `
+                        <div style="margin-bottom: 15px;">
+                            <h4>${exp.title} at ${exp.name}</h4>
+                            <p><strong>Duration:</strong> ${exp.start_date} - ${exp.is_current ? 'Present' : exp.end_date}</p>
+                            <p><strong>Location:</strong> ${exp.location || 'Not specified'}</p>
+                            <p>${exp.description}</p>
+                        </div>
+                    `).join('')}
+                </div>
+                ` : ''}
+                
+                ${resume.projects.length > 0 ? `
+                <div class="resume-section">
+                    <h3>Projects</h3>
+                    ${resume.projects.map(project => `
+                        <div style="margin-bottom: 15px;">
+                            <h4>${project.title}</h4>
+                            <p><strong>Duration:</strong> ${project.start_date} - ${project.end_date || 'Ongoing'}</p>
+                            <p>${project.description}</p>
+                        </div>
+                    `).join('')}
+                </div>
+                ` : ''}
+                
+                ${resume.skills.length > 0 ? `
+                <div class="resume-section">
+                    <h3>Skills</h3>
+                    <p>${resume.skills.map(skill => `${skill.name}${skill.level ? ` (${skill.level}/5)` : ''}`).join(', ')}</p>
+                </div>
+                ` : ''}
+                
+                ${resume.education.length > 0 ? `
+                <div class="resume-section">
+                    <h3>Education</h3>
+                    ${resume.education.map(edu => `
+                        <div style="margin-bottom: 15px;">
+                            <h4>${edu.degree}</h4>
+                            <p><strong>Institution:</strong> ${edu.name}</p>
+                            <p><strong>Duration:</strong> ${edu.start_date} - ${edu.end_date || 'Ongoing'}</p>
+                            <p><strong>Location:</strong> ${edu.location}</p>
+                            ${edu.description ? `<p>${edu.description}</p>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+                ` : ''}
+                
+                ${resume.certifications.length > 0 ? `
+                <div class="resume-section">
+                    <h3>Certifications</h3>
+                    ${resume.certifications.map(cert => `
+                        <div style="margin-bottom: 15px;">
+                            <h4>${cert.name}</h4>
+                            ${cert.description ? `<p>${cert.description}</p>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+                ` : ''}
+            `;
+            
+            // Remove existing preview
+            const existingPreview = document.querySelector('.resume-preview');
+            if (existingPreview) {
+                existingPreview.remove();
+            }
+            
+            // Add new preview
+            document.getElementById('resumesTab').appendChild(preview);
+        }
+
+        // Handle Google OAuth callback
+        async function handleGoogleCallback() {
+            try {
+                // Check if we have a token in the URL or if we're coming from Google OAuth
+                const urlParams = new URLSearchParams(window.location.search);
+                const token = urlParams.get('token');
+                
+                if (token) {
+                    // We have a token from Google OAuth callback
+                    authToken = token;
+                    localStorage.setItem('authToken', token);
+                    
+                    // Get user profile to complete the login
+                    const response = await fetch(`${API_BASE}/auth/profile`, {
+                        headers: getAuthHeaders()
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        currentUser = data.data.user;
+                        document.getElementById('authSection').style.display = 'none';
+                        document.getElementById('mainContent').classList.add('active');
+                        document.getElementById('userInfo').textContent = `Welcome, ${currentUser.name}!`;
+                        showStatus('authStatus', 'Google OAuth login successful!', 'success');
+                        await loadAllData();
+                        
+                        // Clean up URL
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    } else {
+                        showStatus('authStatus', 'Failed to get user profile', 'error');
+                    }
+                }
+            } catch (error) {
+                console.error('Google OAuth callback error:', error);
+                showStatus('authStatus', 'Google OAuth login failed', 'error');
+            }
+        }
+
+        // Auto-login with stored token
+        async function autoLoginWithStoredToken() {
+            const storedToken = localStorage.getItem('authToken');
+            if (storedToken && !authToken) {
+                try {
+                    // Show auto-login status
+                    const autoLoginStatus = document.getElementById('autoLoginStatus');
+                    autoLoginStatus.classList.remove('hidden');
+                    
+                    authToken = storedToken;
+                    
+                    // Verify the token by getting user profile
+                    const response = await fetch(`${API_BASE}/auth/profile`, {
+                        headers: getAuthHeaders()
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        currentUser = data.data.user;
+                        document.getElementById('authSection').style.display = 'none';
+                        document.getElementById('mainContent').classList.add('active');
+                        document.getElementById('userInfo').textContent = `Welcome back, ${currentUser.name}!`;
+                        await loadAllData();
+                        console.log('Auto-login successful');
+                    } else {
+                        // Token is invalid, remove it
+                        localStorage.removeItem('authToken');
+                        authToken = '';
+                        autoLoginStatus.classList.add('hidden');
+                        console.log('Stored token is invalid, removed from localStorage');
+                    }
+                } catch (error) {
+                    // Token is invalid or network error, remove it
+                    localStorage.removeItem('authToken');
+                    authToken = '';
+                    const autoLoginStatus = document.getElementById('autoLoginStatus');
+                    autoLoginStatus.classList.add('hidden');
+                    console.log('Auto-login failed, removed invalid token');
+                }
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle Google OAuth callback first
+            handleGoogleCallback();
+            
+            // Auto-login with stored token if available
+            autoLoginWithStoredToken();
+        });
+    </script>
+</body>
+</html>
