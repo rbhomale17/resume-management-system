@@ -776,6 +776,14 @@
             }, 5000);
         }
 
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${months[date.getMonth()]} ${date.getFullYear()}`;
+        }
+
         function showLoading(show = true) {
             const loading = document.getElementById('loading');
             if (show) {
@@ -1078,10 +1086,10 @@
             experiences.forEach(exp => {
                 const card = document.createElement('div');
                 card.className = 'card';
-                const endDate = exp.is_current ? 'Present' : exp.end_date;
+                const endDate = exp.is_current ? 'Present' : formatDate(exp.end_date);
                 card.innerHTML = `
                     <h3>${exp.title} at ${exp.name}</h3>
-                    <p><strong>Duration:</strong> ${exp.start_date} - ${endDate}</p>
+                    <p><strong>Duration:</strong> ${formatDate(exp.start_date)} - ${endDate}</p>
                     <p><strong>Location:</strong> ${exp.location || 'Not specified'}</p>
                     <p><strong>Description:</strong> ${exp.description}</p>
                     <button class="btn btn-danger" onclick="deleteExperience(${exp.id})">Delete</button>
@@ -1097,9 +1105,10 @@
             projects.forEach(project => {
                 const card = document.createElement('div');
                 card.className = 'card';
+                const endDate = project.end_date ? formatDate(project.end_date) : 'Ongoing';
                 card.innerHTML = `
                     <h3>${project.title}</h3>
-                    <p><strong>Duration:</strong> ${project.start_date} - ${project.end_date || 'Ongoing'}</p>
+                    <p><strong>Duration:</strong> ${formatDate(project.start_date)} - ${endDate}</p>
                     <p><strong>Description:</strong> ${project.description}</p>
                     ${project.url ? `<p><strong>URL:</strong> <a href="${project.url}" target="_blank">${project.url}</a></p>` : ''}
                     <button class="btn btn-danger" onclick="deleteProject(${project.id})">Delete</button>
@@ -1115,9 +1124,8 @@
             skills.forEach(skill => {
                 const card = document.createElement('div');
                 card.className = 'card';
-                const levelText = skill.level ? ` (Level ${skill.level})` : '';
                 card.innerHTML = `
-                    <h3>${skill.name}${levelText}</h3>
+                    <h3>${skill.name}</h3>
                     <button class="btn btn-danger" onclick="deleteSkill(${skill.id})">Delete</button>
                 `;
                 container.appendChild(card);
@@ -1131,10 +1139,11 @@
             education.forEach(edu => {
                 const card = document.createElement('div');
                 card.className = 'card';
+                const endDate = edu.end_date ? formatDate(edu.end_date) : 'Ongoing';
                 card.innerHTML = `
                     <h3>${edu.degree}</h3>
                     <p><strong>Institution:</strong> ${edu.name}</p>
-                    <p><strong>Duration:</strong> ${edu.start_date} - ${edu.end_date || 'Ongoing'}</p>
+                    <p><strong>Duration:</strong> ${formatDate(edu.start_date)} - ${endDate}</p>
                     <p><strong>Location:</strong> ${edu.location}</p>
                     ${edu.description ? `<p><strong>Description:</strong> ${edu.description}</p>` : ''}
                     <button class="btn btn-danger" onclick="deleteEducation(${edu.id})">Delete</button>
@@ -1764,7 +1773,7 @@
                     ${resume.work_experiences.map(exp => `
                         <div style="margin-bottom: 15px;">
                             <h4>${exp.title} at ${exp.name}</h4>
-                            <p><strong>Duration:</strong> ${exp.start_date} - ${exp.is_current ? 'Present' : exp.end_date}</p>
+                            <p><strong>Duration:</strong> ${formatDate(exp.start_date)} - ${exp.is_current ? 'Present' : formatDate(exp.end_date)}</p>
                             <p><strong>Location:</strong> ${exp.location || 'Not specified'}</p>
                             <p>${exp.description}</p>
                         </div>
@@ -1778,7 +1787,7 @@
                     ${resume.projects.map(project => `
                         <div style="margin-bottom: 15px;">
                             <h4>${project.title}</h4>
-                            <p><strong>Duration:</strong> ${project.start_date} - ${project.end_date || 'Ongoing'}</p>
+                            <p><strong>Duration:</strong> ${formatDate(project.start_date)} - ${project.end_date ? formatDate(project.end_date) : 'Ongoing'}</p>
                             <p>${project.description}</p>
                         </div>
                     `).join('')}
@@ -1788,7 +1797,7 @@
                 ${resume.skills.length > 0 ? `
                 <div class="resume-section">
                     <h3>Skills</h3>
-                    <p>${resume.skills.map(skill => `${skill.name}${skill.level ? ` (${skill.level}/5)` : ''}`).join(', ')}</p>
+                    <p>${resume.skills.map(skill => skill.name).join(', ')}</p>
                 </div>
                 ` : ''}
                 
@@ -1799,7 +1808,7 @@
                         <div style="margin-bottom: 15px;">
                             <h4>${edu.degree}</h4>
                             <p><strong>Institution:</strong> ${edu.name}</p>
-                            <p><strong>Duration:</strong> ${edu.start_date} - ${edu.end_date || 'Ongoing'}</p>
+                            <p><strong>Duration:</strong> ${formatDate(edu.start_date)} - ${edu.end_date ? formatDate(edu.end_date) : 'Ongoing'}</p>
                             <p><strong>Location:</strong> ${edu.location}</p>
                             ${edu.description ? `<p>${edu.description}</p>` : ''}
                         </div>
