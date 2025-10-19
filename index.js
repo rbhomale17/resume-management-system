@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 require('dotenv').config();
 const cors = require('cors');
 const helmet = require('helmet');
@@ -17,6 +18,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Serve static files from public directory
+app.use(express.static('public'));
 
 // CORS
 app.use(cors(
@@ -87,8 +91,13 @@ app.get('/api/test-auth', authenticateToken, (req, res) => {
     });
 });
 
-// Root endpoint
+// Serve the main HTML page
 app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// API documentation endpoint
+app.get('/api', (req, res) => {
     res.json({
         message: process.env.PROJECT_NAME,
         version: process.env.PROJECT_VERSION,
@@ -100,6 +109,7 @@ app.get('/', (req, res) => {
         website: 'https://rbhomale17.github.io/',
         leetcode: 'https://leetcode.com/u/rbhomale17/',
         timestamp: new Date().toISOString(),
+        webInterface: 'Visit / to access the web interface',
         api: {
             auth: {
                 register: 'POST /api/auth/register',
@@ -171,7 +181,8 @@ app.get('/', (req, res) => {
             security: 'JWT tokens, bcrypt password hashing, SQL injection protection',
             resumeManagement: 'Complete CRUD operations for resume components',
             resumeComponents: 'Personal info, summaries, work experience, projects, skills, education, certifications',
-            resumeBuilder: 'Create multiple resumes by combining different components'
+            resumeBuilder: 'Create multiple resumes by combining different components',
+            webInterface: 'Beautiful, responsive web interface for easy resume management'
         }
     });
 });
@@ -196,7 +207,8 @@ app.listen(port, '0.0.0.0', async () => {
         
         console.log(`✅ Server is running on port ${port}`);
         console.log(`🌐 Health check available at: http://localhost:${port}/health`);
-        console.log(`📋 API documentation: http://localhost:${port}/`);
+        console.log(`📋 API documentation: http://localhost:${port}/api`);
+        console.log(`🎨 Web Interface: http://localhost:${port}/`);
         
     } catch (error) {
         console.error('❌ Failed to start server:', error);

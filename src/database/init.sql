@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS personal_information (
     phone_number VARCHAR(255) NOT NULL,
     location VARCHAR(255) NOT NULL,
     social_media_urls JSONB DEFAULT '{}',
+    is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

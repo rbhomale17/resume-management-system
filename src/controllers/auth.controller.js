@@ -253,7 +253,16 @@ const googleAuth = async (req, res) => {
             maxAge: Number(JWT_EXPIRES_IN) * 60 * 1000 // JWT_EXPIRES_IN minutes
         });
 
-        // Return JSON response with token
+        // For web interface, redirect with token in URL
+        // Check if request is from a browser (has User-Agent and no API client indicators)
+        const userAgent = req.headers['user-agent'] || '';
+        const isBrowser = userAgent.includes('Mozilla') || userAgent.includes('Chrome') || userAgent.includes('Safari') || userAgent.includes('Firefox');
+        
+        if (isBrowser) {
+            return res.redirect(`/?token=${token}`);
+        }
+
+        // Return JSON response with token for API clients
         res.json({
             success: true,
             message: 'Google OAuth authentication successful',
